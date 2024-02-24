@@ -1,4 +1,4 @@
-package com.vits.EventCalendar.models.user;
+package com.vits.EventCalendar.models;
 
 import java.util.Collection;
 import java.util.List;

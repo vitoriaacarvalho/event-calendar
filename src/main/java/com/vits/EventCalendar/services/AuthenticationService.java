@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vits.EventCalendar.dtos.RegisterDTO;
-import com.vits.EventCalendar.models.user.User;
+import com.vits.EventCalendar.models.User;
 import com.vits.EventCalendar.repositories.UserRepository;
 
 @Service

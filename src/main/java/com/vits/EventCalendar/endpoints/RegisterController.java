@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vits.EventCalendar.dtos.RegisterDTO;
-import com.vits.EventCalendar.models.user.User;
+import com.vits.EventCalendar.models.User;
 import com.vits.EventCalendar.repositories.UserRepository;
 import com.vits.EventCalendar.services.AuthenticationService;
 

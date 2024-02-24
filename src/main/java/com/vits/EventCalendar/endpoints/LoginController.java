@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vits.EventCalendar.dtos.AuthenticationDTO;
 import com.vits.EventCalendar.dtos.LoginResponseDTO;
-import com.vits.EventCalendar.models.user.User;
+import com.vits.EventCalendar.models.User;
 import com.vits.EventCalendar.services.TokenService;
 
 import jakarta.validation.Valid;
