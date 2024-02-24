@@ -11,23 +11,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vits.EventCalendar.dtos.RegisterDTO;
 import com.vits.EventCalendar.models.user.User;
 import com.vits.EventCalendar.repositories.UserRepository;
+import com.vits.EventCalendar.services.AuthenticationService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api/auth/register")
 public class RegisterController {
+	
 	@Autowired 
-	private UserRepository userRepository;
+	private AuthenticationService authService;
 	
 	@PostMapping
 	public ResponseEntity<String> register(@RequestBody @Valid RegisterDTO data) {
-		if(this.userRepository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
-		String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-		User newUser = new User(data.login(), encryptedPassword, data.role());
-		this.userRepository.save(newUser);
-		return ResponseEntity.ok().build();
+		return authService.saveUser(data);
 	}
-	
-	
 }
