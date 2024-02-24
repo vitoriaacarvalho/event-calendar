@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vits.EventCalendar.dtos.AuthenticationDTO;
+import com.vits.EventCalendar.dtos.LoginResponseDTO;
+import com.vits.EventCalendar.models.user.User;
+import com.vits.EventCalendar.services.TokenService;
 
 import jakarta.validation.Valid;
 
@@ -19,10 +22,15 @@ public class LoginController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	@Autowired 
+	private TokenService tokenService;
+	
 	@PostMapping
-	public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
+	public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO data) {
 		var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
 		var auth = this.authenticationManager.authenticate(usernamePassword);
-		return ResponseEntity.ok().build();
+		var token = tokenService.generateToken((User) auth.getPrincipal());
+		
+		return ResponseEntity.ok(new LoginResponseDTO(token));
 	}
 }
