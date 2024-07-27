@@ -17,13 +17,17 @@ import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table(name ="users")
 @Entity(name="users")
 @Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of="id")
 public class User implements UserDetails{
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;

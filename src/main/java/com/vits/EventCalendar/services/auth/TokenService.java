@@ -1,4 +1,4 @@
-package com.vits.EventCalendar.services;
+package com.vits.EventCalendar.services.auth;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

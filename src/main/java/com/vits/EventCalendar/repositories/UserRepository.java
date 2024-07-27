@@ -7,4 +7,5 @@ import com.vits.EventCalendar.models.User;
 
 public interface UserRepository extends JpaRepository<User, String>{
 	UserDetails findByLogin(String login);
+
 }

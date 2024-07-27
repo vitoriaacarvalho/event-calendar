@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.vits.EventCalendar.repositories.UserRepository;
-import com.vits.EventCalendar.services.TokenService;
+import com.vits.EventCalendar.services.auth.TokenService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

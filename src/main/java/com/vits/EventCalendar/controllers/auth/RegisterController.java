@@ -1,4 +1,4 @@
-package com.vits.EventCalendar.endpoints;
+package com.vits.EventCalendar.controllers.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vits.EventCalendar.dtos.RegisterDTO;
-import com.vits.EventCalendar.services.AuthenticationService;
+import com.vits.EventCalendar.services.auth.AuthenticationService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/auth/register")
+@RequestMapping("api/post/auth/register")
 public class RegisterController {
 	
 	@Autowired 

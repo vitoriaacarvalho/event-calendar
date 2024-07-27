@@ -1,4 +1,4 @@
-package com.vits.EventCalendar.services;
+package com.vits.EventCalendar.services.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class AuthenticationService implements UserDetailsService {
 
 	public ResponseEntity<String> saveUser(RegisterDTO data) {
 		if (this.userRepository.findByLogin(data.login()) != null || !emailValidation.validateEmail(data.email())) {
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().body("This username is already in use. Please choose another one!");
 		}
 		String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
 		User newUser = new User(data.login(), encryptedPassword, data.email(), data.role());
