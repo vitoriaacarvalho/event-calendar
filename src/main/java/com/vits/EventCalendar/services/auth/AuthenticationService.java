@@ -18,17 +18,14 @@ public class AuthenticationService implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private UserEmailValidation emailValidation;
-
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return userRepository.findByLogin(username);
 	}
 
 	public ResponseEntity<String> saveUser(RegisterDTO data) {
-		if (this.userRepository.findByLogin(data.login()) != null || !emailValidation.validateEmail(data.email())) {
-			return ResponseEntity.badRequest().body("This username is already in use. Please choose another one!");
+		if (this.userRepository.findByLogin(data.login()) != null || this.userRepository.findByEmail(data.email()) != null ) {
+			return ResponseEntity.badRequest().body("Username or email is already in use. Please choose another one and try again.");
 		}
 		String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
 		User newUser = new User(data.login(), encryptedPassword, data.email(), data.role());

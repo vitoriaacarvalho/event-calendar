@@ -1,9 +1,7 @@
-package com.vits.EventCalendar.controllers.auth;
+package com.vits.EventCalendar.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vits.EventCalendar.dtos.UpdateUserEmailRequestDTO;
 import com.vits.EventCalendar.dtos.UpdateUserPasswordRequestDTO;
 import com.vits.EventCalendar.dtos.UpdateUserUsernameRequestDTO;
-import com.vits.EventCalendar.models.User;
+import com.vits.EventCalendar.helpers.GetLoggedInUser;
 import com.vits.EventCalendar.services.auth.UpdateUserService;
 
 @RestController
-@RequestMapping("api/put/auth/update-user")
+@RequestMapping("auth/update-user")
 public class UpdateUserController {
 	@Autowired
 	private UpdateUserService updateUserService;
@@ -25,27 +23,25 @@ public class UpdateUserController {
 	@Autowired 
 	private LogoutController logout;
 	
-	private User getLoggedInUserObject() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return (User) authentication.getPrincipal();
-	}
+	@Autowired
+	private GetLoggedInUser loggedInUser;
 	
 	@PutMapping("/password")
 	public ResponseEntity<Void> updatePassword(@RequestBody UpdateUserPasswordRequestDTO updatePasswordRequest) {
 		String encryptedPassword = new BCryptPasswordEncoder().encode(updatePasswordRequest.newPassword());	
-		updateUserService.updatePassword(getLoggedInUserObject(), encryptedPassword);
+		updateUserService.updatePassword(loggedInUser.getLoggedInUserObject(), encryptedPassword);
 		return logout.logout();
 	}
 	
 	@PutMapping("/username")
 	public ResponseEntity<Void> updateUsername(@RequestBody UpdateUserUsernameRequestDTO updateUsernameRequest) {
-		updateUserService.updateUsername(getLoggedInUserObject(), updateUsernameRequest.newUsername());
+		updateUserService.updateUsername(loggedInUser.getLoggedInUserObject(), updateUsernameRequest.newUsername());
 		return ResponseEntity.ok().build();
 	}
 	
 	@PutMapping("/email")
 	public ResponseEntity<Void> updateEmail(@RequestBody UpdateUserEmailRequestDTO updateEmailRequest) {
-		updateUserService.updateEmail(getLoggedInUserObject(), updateEmailRequest.newEmail());
+		updateUserService.updateEmail(loggedInUser.getLoggedInUserObject(), updateEmailRequest.newEmail());
 		return ResponseEntity.ok().build();
 	}
 }

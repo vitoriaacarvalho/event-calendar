@@ -17,7 +17,7 @@ import com.vits.EventCalendar.services.auth.TokenService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/post/auth/login")
+@RequestMapping("auth/login")
 public class LoginController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
