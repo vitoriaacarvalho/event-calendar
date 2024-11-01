@@ -5,7 +5,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.vits.EventCalendar.dtos.CreateEventRequestDTO;
 import com.vits.EventCalendar.helpers.GetLoggedInUser;
@@ -25,7 +27,10 @@ public class CreateEventService {
 	@Autowired
 	private GetEventTagByIdService getEventTag;
 
-	public void createEvent(CreateEventRequestDTO data) {
+	@Autowired 
+	private UploadFileToS3Bucket uploadFileService;
+	
+	public void createEvent(CreateEventRequestDTO data, MultipartFile file) {
 		Event event = new Event();
 		event.setTags(getEventTagsObjects(data.eventTagsId()));
 		event.setSpotifyPlaylistLink(data.spotifyPlaylistLink());
@@ -34,8 +39,9 @@ public class CreateEventService {
 		event.setTitle(data.title());
 		event.setPlace(data.place());
 		event.setEventOwner(loggedInUser.getLoggedInUserObject());
-
+		
 		repository.save(event);
+		uploadFileService.uploadFile(file);
 	}
 
 	private Set<EventTag> getEventTagsObjects(Set<String> data) {
