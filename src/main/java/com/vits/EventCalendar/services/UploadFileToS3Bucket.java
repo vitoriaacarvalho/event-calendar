@@ -11,9 +11,9 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 @Service
 public class UploadFileToS3Bucket {
 
-	private String accessKey = System.getenv("ACCESS_KEY");
-	private String secretKey = System.getenv("SECRET_KEY");
-	private String bucketName = System.getenv("BUCKET_NAME");
+	private final String accessKey = System.getenv("ACCESS_KEY");
+	private final String secretKey = System.getenv("SECRET_KEY");
+	private final String bucketName = System.getenv("BUCKET_NAME");
 
     public void uploadFile(MultipartFile file) {
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
