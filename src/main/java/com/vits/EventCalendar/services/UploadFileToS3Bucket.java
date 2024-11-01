@@ -18,16 +18,14 @@ public class UploadFileToS3Bucket {
     public void uploadFile(MultipartFile file) {
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-                .withRegion("us-east-1") // Substitua pela sua região
+                .withRegion("us-east-1")
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
-
         try {
             String keyName = file.getOriginalFilename(); 
             PutObjectRequest request = new PutObjectRequest(bucketName, keyName, file.getInputStream(), null);
             
             s3Client.putObject(request);
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
