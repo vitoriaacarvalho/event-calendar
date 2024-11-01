@@ -69,6 +69,6 @@ public class Event {
 	@JsonIgnoreProperties("createdEvents")
 	@NotNull
 	@ManyToOne
-    @JoinColumn(name = "created_by_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "created_by_user_id", referencedColumnName = "id")
 	private User eventOwner;
 }
