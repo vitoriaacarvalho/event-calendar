@@ -1,11 +1,12 @@
 package com.vits.EventCalendar.services;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +31,9 @@ public class CreateEventService {
 	@Autowired 
 	private UploadFileToS3Bucket uploadFileService;
 	
+	@Autowired
+	private SendEmailNotificationService mailer;
+	
 	public void createEvent(CreateEventRequestDTO data, MultipartFile file) {
 		Event event = new Event();
 		event.setTags(getEventTagsObjects(data.eventTagsId()));
@@ -42,6 +46,11 @@ public class CreateEventService {
 		
 		repository.save(event);
 		uploadFileService.uploadFile(file);
+		//mock
+		List<String> sendTo = new ArrayList<String>();
+		sendTo.add("vitoriaprogramadora@gmail.com");
+		//end mock
+		mailer.sendEmail(sendTo, "teste", "testando feature massa");
 	}
 
 	private Set<EventTag> getEventTagsObjects(Set<String> data) {
