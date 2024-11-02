@@ -25,7 +25,6 @@ public class CreateEvent {
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Void> createEvent(@RequestPart("data") String dataJson, @RequestPart("file") MultipartFile file) {
-		System.out.print(file.getOriginalFilename());
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    CreateEventRequestDTO data;
 		try {

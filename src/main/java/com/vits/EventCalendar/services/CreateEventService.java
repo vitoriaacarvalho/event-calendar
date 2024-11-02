@@ -27,9 +27,9 @@ public class CreateEventService {
 	@Autowired
 	private GetEventTagByIdService getEventTag;
 
-	@Autowired 
+	@Autowired
 	private UploadFileToS3Bucket uploadFileService;
-	
+
 	public void createEvent(CreateEventRequestDTO data, MultipartFile file) {
 		Event event = new Event();
 		event.setTags(getEventTagsObjects(data.eventTagsId()));
@@ -39,9 +39,11 @@ public class CreateEventService {
 		event.setTitle(data.title());
 		event.setPlace(data.place());
 		event.setEventOwner(loggedInUser.getLoggedInUserObject());
-		
+
 		repository.save(event);
-		uploadFileService.uploadFile(file);
+		if (!file.isEmpty()) {
+			uploadFileService.uploadFile(file);
+		}
 	}
 
 	private Set<EventTag> getEventTagsObjects(Set<String> data) {
