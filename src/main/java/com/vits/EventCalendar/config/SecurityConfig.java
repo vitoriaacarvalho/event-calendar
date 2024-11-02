@@ -34,6 +34,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/event/tags/get-all").hasAnyRole("ADMIN", "USER") 
                         .requestMatchers(HttpMethod.POST, "/event/tags/create").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/event/get-all").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/get-all").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/event/send-invites").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

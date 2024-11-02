@@ -45,12 +45,14 @@ public class CreateEventService {
 		event.setEventOwner(loggedInUser.getLoggedInUserObject());
 		
 		repository.save(event);
-		uploadFileService.uploadFile(file);
+		if (!file.isEmpty()) {
+			uploadFileService.uploadFile(file);
+		}
 		//mock
 		List<String> sendTo = new ArrayList<String>();
 		sendTo.add("vitoriaprogramadora@gmail.com");
 		//end mock
-		mailer.sendEmail(sendTo, "teste", "testando feature massa");
+		//mailer.sendEmail(sendTo, "teste", "testando feature massa");
 	}
 
 	private Set<EventTag> getEventTagsObjects(Set<String> data) {
