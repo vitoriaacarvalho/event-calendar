@@ -19,7 +19,7 @@ public class InviteUsersController {
 	
 	@PostMapping
 	public ResponseEntity<String> inviteUsers(@RequestBody InviteUsersRequestDTO data) {
-		inviteService.inviteUsers(data.invitedUsersIDs());
+		inviteService.inviteUsers(data.invitedUsersIDs(), data.eventId());
 		return ResponseEntity.ok().build();
 	}
 }
