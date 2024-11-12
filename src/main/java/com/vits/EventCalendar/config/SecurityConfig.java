@@ -20,6 +20,14 @@ public class SecurityConfig {
     @Autowired
     private SecurityFilter securityFilter;
 
+    private static final String[] SWAGGER_WHITELIST = {
+    	"/swagger-ui/**",
+    	"/swagger-ui/index.html",
+    	"v3/api-docs/**",
+    	"/swagger-resources/**",
+    	"/swagger-resources"
+    };
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return  httpSecurity
@@ -36,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/event/get-all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/get-all").permitAll()
                         .requestMatchers(HttpMethod.POST, "/event/send-invites").permitAll()
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
