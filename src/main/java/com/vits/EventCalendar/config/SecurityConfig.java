@@ -24,6 +24,7 @@ public class SecurityConfig {
     	"/swagger-ui/**",
     	"/swagger-ui/index.html",
     	"v3/api-docs/**",
+    	"api-docs",
     	"/swagger-resources/**",
     	"/swagger-resources"
     };
@@ -43,8 +44,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/event/tags/create").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/event/get-all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/get-all").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-resources").permitAll()
                         .requestMatchers(HttpMethod.POST, "/event/send-invites").permitAll()
-                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
