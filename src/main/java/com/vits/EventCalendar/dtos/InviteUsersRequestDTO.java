@@ -3,6 +3,8 @@ package com.vits.EventCalendar.dtos;
 import java.util.List;
 import java.util.UUID;
 
-public record InviteUsersRequestDTO(List<UUID> invitedUsersIDs, String eventName) {
+import jakarta.annotation.Nullable;
+
+public record InviteUsersRequestDTO(List<UUID> invitedUsersIDs, UUID eventId, @Nullable String emailBody) {
 
 }
