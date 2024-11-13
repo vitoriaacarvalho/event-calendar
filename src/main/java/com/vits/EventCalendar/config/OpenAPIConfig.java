@@ -14,11 +14,11 @@ public class OpenAPIConfig {
  public OpenAPI customOpenAPI() {
      return new OpenAPI()
              .info(new Info()
-                     .title("Nome da sua API")
+                     .title("Event Manager API")
                      .version("1.0")
-                     .description("Descrição da sua API")
+                     .description("Manager for events in friend groups to help with event invitations.")
                      .contact(new Contact()
-                             .name("Seu Nome")
-                             .email("seu.email@exemplo.com")));
+                             .name("Vitória")
+                             .email("vitoriaprogramadora@gmail.com")));
  }
 }
