@@ -1,9 +1,13 @@
 package com.vits.EventCalendar.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,56 +17,70 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vits.EventCalendar.exceptions.ErrorResponseModel;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
-    private SecurityFilter securityFilter;
+	@Autowired
+	private SecurityFilter securityFilter;
 
-    private static final String[] SWAGGER_WHITELIST = {
-    	"/swagger-ui/**",
-    	"/swagger-ui/index.html",
-    	"v3/api-docs/**",
-    	"api-docs",
-    	"/swagger-resources/**",
-    	"/swagger-resources"
-    };
-    
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return  httpSecurity
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/logout").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.PUT, "/auth/update-user/**").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.POST, "/event/create").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET, "/event/tags/get-all").hasAnyRole("ADMIN", "USER") 
-                        .requestMatchers(HttpMethod.POST, "/event/tags/create").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET, "/event/get-all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/get-all").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-resources").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/event/send-invites").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/swagger-ui.html").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+		return httpSecurity.csrf(csrf -> csrf.disable())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.cors(cors -> cors.configurationSource(request -> {
+					CorsConfiguration config = new CorsConfiguration();
+					config.setAllowedMethods(Arrays.asList("*"));
+					config.setAllowedOrigins(Arrays.asList("*"));
+					config.setAllowedHeaders(Arrays.asList("*"));
+					return config;
+				})).exceptionHandling(handling -> handling.authenticationEntryPoint((request, response, ex) -> {
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+					response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+					response.getWriter()
+							.write(new ObjectMapper().writeValueAsString(ErrorResponseModel.builder()
+									.status(HttpStatus.UNAUTHORIZED.value())
+									.error("Unauthorized")
+									.message("Invalid or expired authorization token. Log in and try again.")
+									.build()));
+				}).accessDeniedHandler((request, response, ex) -> {
+					response.setStatus(HttpStatus.FORBIDDEN.value());
+					response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+					response.getWriter().write(new ObjectMapper().writeValueAsString(ErrorResponseModel.builder()
+							.status(HttpStatus.FORBIDDEN.value())
+							.error("Forbidden.")
+							.message("Invalid username or password.")
+							.build()));
+				}))
+				.authorizeHttpRequests(authorize -> authorize.requestMatchers(HttpMethod.POST, "/auth/login")
+						.permitAll().requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+						.requestMatchers(HttpMethod.GET, "/auth/logout").hasAnyRole("ADMIN", "USER")
+						.requestMatchers(HttpMethod.PUT, "/auth/update-user/**").hasAnyRole("ADMIN", "USER")
+						.requestMatchers(HttpMethod.POST, "/event/create").hasAnyRole("ADMIN", "USER")
+						.requestMatchers(HttpMethod.GET, "/event/tags/get-all").hasAnyRole("ADMIN", "USER")
+						.requestMatchers(HttpMethod.POST, "/event/tags/create").hasAnyRole("ADMIN", "USER")
+						.requestMatchers(HttpMethod.GET, "/event/get-all").permitAll()
+						.requestMatchers(HttpMethod.GET, "/users/get-all").permitAll()
+						.requestMatchers(HttpMethod.POST, "/event/send-invites").permitAll()
+						.requestMatchers("/v3/api-docs/**").permitAll().requestMatchers("/swagger-ui/**").permitAll()
+						.requestMatchers("/swagger-resources/**").permitAll().requestMatchers("/swagger-ui.html")
+						.permitAll().anyRequest().authenticated())
+				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class).build();
+	}
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+			throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
 }
